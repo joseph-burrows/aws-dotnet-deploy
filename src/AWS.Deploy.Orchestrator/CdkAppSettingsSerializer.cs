@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using AWS.Deploy.Common;
+using AWS.Deploy.Recipes.CDK.Common;
 
 namespace AWS.Deploy.Orchestrator
 {
@@ -13,33 +14,37 @@ namespace AWS.Deploy.Orchestrator
     {
         public string Build(CloudApplication cloudApplication, Recommendation recommendation)
         {
-            // General Settings
-            var settings = new Dictionary<string, object>
+            var appSettingsContainer = new RecipeConfiguration<Dictionary<string, object>>()
             {
-                { nameof(recommendation.ProjectPath), recommendation.ProjectPath },
-                { "StackName", cloudApplication.StackName },
-                { "DockerfileDirectory",  new FileInfo(recommendation.ProjectPath).Directory.FullName }
+                StackName = cloudApplication.StackName,
+                ProjectPath = new FileInfo(recommendation.ProjectPath).Directory.FullName,
+                Settings = new Dictionary<string, object>()
             };
+
+            appSettingsContainer.DockerfileDirectory = new FileInfo(recommendation.ProjectPath).Directory.FullName;
+
+            appSettingsContainer.RecipeId = recommendation.Recipe.Id;
+            appSettingsContainer.RecipeVersion = recommendation.Recipe.Version;
 
             string solutionFilePath = GetProjectSolutionFile(recommendation.ProjectPath);
             if (!string.IsNullOrEmpty(solutionFilePath))
             {
-                settings["ProjectSolutionPath"] = solutionFilePath;
+                appSettingsContainer.ProjectSolutionPath = solutionFilePath;
             }
 
             // Option Settings
             foreach (var optionSetting in recommendation.Recipe.OptionSettings)
             {
-                settings[optionSetting.Id] = recommendation.GetOptionSettingValue(optionSetting.Id);
+                appSettingsContainer.Settings[optionSetting.Id] = recommendation.GetOptionSettingValue(optionSetting.Id);
             }
 
             foreach (var optionSetting in recommendation.ListOptionSettings())
             {
-                if (!settings.ContainsKey(optionSetting))
-                    settings[optionSetting] = recommendation.GetOptionSettingValue(optionSetting);
+                if (!appSettingsContainer.Settings.ContainsKey(optionSetting))
+                    appSettingsContainer.Settings[optionSetting] = recommendation.GetOptionSettingValue(optionSetting);
             }
 
-            return JsonSerializer.Serialize(settings);
+            return JsonSerializer.Serialize(appSettingsContainer);
         }
 
         private string GetProjectSolutionFile(string projectPath)

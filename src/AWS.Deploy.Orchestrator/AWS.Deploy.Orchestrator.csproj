@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <LangVersion>Latest</LangVersion>
     <AssemblyName>AWS.Deploy.Orchestrator</AssemblyName>
     <RootNamespace>AWS.Deploy.Orchestrator</RootNamespace>
@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\AWS.Deploy.Recipes.CDK.Common\AWS.Deploy.Recipes.CDK.Common.csproj" />
     <ProjectReference Include="..\AWS.Deploy.Recipes\AWS.Deploy.Recipes.csproj" />
     <ProjectReference Include="..\AWS.Deploy.DockerEngine\AWS.Deploy.DockerEngine.csproj" />
     <ProjectReference Include="..\AWS.Deploy.RecommendationEngine\AWS.Deploy.RecommendationEngine.csproj" />

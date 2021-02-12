@@ -1,4 +1,3 @@
-
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30309.148
@@ -44,6 +43,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ManualLinuxTesting", "Manua
 		test\ManualLinuxTesting\Dockerfile = test\ManualLinuxTesting\Dockerfile
 		test\ManualLinuxTesting\Readme.md = test\ManualLinuxTesting\Readme.md
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AWS.Deploy.Recipes.CDK.Common", "src\AWS.Deploy.Recipes.CDK.Common\AWS.Deploy.Recipes.CDK.Common.csproj", "{193555D2-5B6A-498A-A410-3909BA3B8D78}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -99,6 +100,10 @@ Global
 		{3AAC19A6-02E8-45D0-BDD0-CAD0FBE15F64}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3AAC19A6-02E8-45D0-BDD0-CAD0FBE15F64}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3AAC19A6-02E8-45D0-BDD0-CAD0FBE15F64}.Release|Any CPU.Build.0 = Release|Any CPU
+		{193555D2-5B6A-498A-A410-3909BA3B8D78}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{193555D2-5B6A-498A-A410-3909BA3B8D78}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{193555D2-5B6A-498A-A410-3909BA3B8D78}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{193555D2-5B6A-498A-A410-3909BA3B8D78}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -117,6 +122,7 @@ Global
 		{4C4F07CE-4C88-44C6-864F-C5E563712EE2} = {11C7056E-93C1-408B-BD87-5270595BBE0E}
 		{3AAC19A6-02E8-45D0-BDD0-CAD0FBE15F64} = {11C7056E-93C1-408B-BD87-5270595BBE0E}
 		{D0172E70-D5BC-4EDE-84E4-9ADB67B5F8FB} = {BD466B5C-D8B0-4069-98A9-6DC8F01FA757}
+		{193555D2-5B6A-498A-A410-3909BA3B8D78} = {11C7056E-93C1-408B-BD87-5270595BBE0E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5A4B2863-1763-4496-B122-651A38A4F5D7}

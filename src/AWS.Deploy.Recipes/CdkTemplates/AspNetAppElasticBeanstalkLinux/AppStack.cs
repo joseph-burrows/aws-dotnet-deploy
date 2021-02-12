@@ -19,8 +19,6 @@ namespace AspNetAppElasticBeanstalkLinux
 
         internal AppStack(Construct scope, string id, Configuration configuration, IStackProps props = null) : base(scope, id, props)
         {
-            Tags.SetTag(STACK_TAG_KEY, "true");
-
             var asset = new Asset(this, "Asset", new AssetProps
             {
                 Path = configuration.AssetPath
