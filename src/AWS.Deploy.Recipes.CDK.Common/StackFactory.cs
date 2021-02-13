@@ -10,7 +10,7 @@ namespace AWS.Deploy.Recipes.CDK.Common
     {
         public static Stack InitializeAWSDeployStack<C>(Stack stack, RecipeConfiguration<C> recipeConfiguration)
         {
-            stack.Tags.SetTag("aws-dotnet-deploy", $"{recipeConfiguration.RecipeId}", applyToLaunchedInstances:false);
+            stack.Tags.SetTag(CloudFormationIdentifierContants.StackTag, $"{recipeConfiguration.RecipeId}", applyToLaunchedInstances:false);
 
             var json = JsonSerializer.Serialize(recipeConfiguration.Settings, new JsonSerializerOptions { WriteIndented = false });
 
@@ -24,11 +24,20 @@ namespace AWS.Deploy.Recipes.CDK.Common
                 metadata = new Dictionary<string, object>();
             }
 
-            metadata["aws-dotnet-deploy-settings"] = json;
-            metadata["aws-dotnet-deploy-recipe-id"] = recipeConfiguration.RecipeId;
-            metadata["aws-dotnet-deploy-recipe-version"] = recipeConfiguration.RecipeVersion;
+            metadata[CloudFormationIdentifierContants.StackMetadataSettings] = json;
+            metadata[CloudFormationIdentifierContants.StackMetadataRecipeId] = recipeConfiguration.RecipeId;
+            metadata[CloudFormationIdentifierContants.StackMetadataRecipeVersion] = recipeConfiguration.RecipeVersion;
 
             stack.TemplateOptions.Metadata = metadata;
+
+            if(string.IsNullOrEmpty(stack.TemplateOptions.Description))
+            {
+                stack.TemplateOptions.Description = CloudFormationIdentifierContants.StackDescriptionPrefix;
+            }
+            else
+            {
+                stack.TemplateOptions.Description = CloudFormationIdentifierContants.StackDescriptionPrefix + ": " + stack.TemplateOptions.Description;
+            }
 
             return stack;
         }

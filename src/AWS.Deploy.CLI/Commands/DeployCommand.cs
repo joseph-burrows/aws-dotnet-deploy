@@ -49,22 +49,6 @@ namespace AWS.Deploy.CLI.Commands
                     _cdkProjectHandler,
                     new []{ RecipeLocator.FindRecipeDefinitionsPath() });
 
-            var previousSettings = orchestrator.GetPreviousDeploymentSettings();
-            var previousDeploymentNames = previousSettings.GetDeploymentNames();
-
-            _toolInteractiveService.WriteLine(string.Empty);
-
-            string cloudApplicationName;
-            if (previousSettings.Deployments.Count == 0)
-            {
-                cloudApplicationName = _consoleUtilities.AskUserForValue("Enter name for Cloud Application", GetDefaultApplicationName(new ProjectDefinition(_session.ProjectPath).ProjectPath));
-            }
-            else
-            {
-                cloudApplicationName = _consoleUtilities.AskUserToChooseOrCreateNew(previousDeploymentNames.ToList(), "Select Cloud Application to deploy to", null);
-            }
-
-            var previousDeployment = previousSettings.Deployments.FirstOrDefault(x => string.Equals(x.StackName, cloudApplicationName));
 
             var recommendations = orchestrator.GenerateDeploymentRecommendations();
 
@@ -74,15 +58,34 @@ namespace AWS.Deploy.CLI.Commands
                 throw new FailedToGenerateAnyRecommendations();
             }
 
+            var existingApplications = await orchestrator.GetExistingDeployedApplications(recommendations);
+
+            _toolInteractiveService.WriteLine(string.Empty);
+
+            string cloudApplicationName;
+            if (existingApplications.Count == 0)
+            {
+                cloudApplicationName = _consoleUtilities.AskUserForValue("Enter name for Cloud Application", GetDefaultApplicationName(new ProjectDefinition(_session.ProjectPath).ProjectPath));
+            }
+            else
+            {
+                cloudApplicationName = _consoleUtilities.AskUserToChooseOrCreateNew(existingApplications.Select(x => x.Name).ToList(), "Select Cloud Application to deploy to", null);
+            }
+
+            var existingCloudApplication = existingApplications.FirstOrDefault(x => string.Equals(x.Name, cloudApplicationName));
+
+
             _toolInteractiveService.WriteLine(string.Empty);
 
             Recommendation selectedRecommendation = null;
 
-            // If there was a previous deployment be sure to make that recipe be the top recommendation.
-            if (previousDeployment != null)
+            // If using a previous deployment preset settings for deployment based on last deployment.
+            if (existingCloudApplication != null)
             {
-                selectedRecommendation = recommendations.FirstOrDefault(x => string.Equals(x.Recipe.Id, previousDeployment.RecipeId, StringComparison.InvariantCultureIgnoreCase));
-                selectedRecommendation.ApplyPreviousSettings(previousDeployment?.RecipeOverrideSettings);
+                var existingCloudApplicationMetadata = await orchestrator.LoadCloudApplicationMetadataAsync(existingCloudApplication.Name);
+
+                selectedRecommendation = recommendations.FirstOrDefault(x => string.Equals(x.Recipe.Id, existingCloudApplication.RecipeId, StringComparison.InvariantCultureIgnoreCase));
+                selectedRecommendation.ApplyPreviousSettings(existingCloudApplicationMetadata.Settings);
             }
             else
             {
